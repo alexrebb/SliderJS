@@ -13,7 +13,6 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
 
     const sliderElements = [];
     let currentSlideWasChanged = false;
-    let statusEvents = true;
     let interval;
     let currentSlide = startSlide;
     let rightSlide = currentSlide + 1;
@@ -21,6 +20,7 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
     let defaultDragShift = 0;
     let clickX;
     let startX;
+    let transitionStatus = false;
 
     function setupInputParameters() {
         if (widthSlider) {
@@ -82,8 +82,10 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
     }
 
     function nextSlide() {
-        removeEventsClick();
-        removeEventsDrag();
+        if (transitionStatus) {
+            return
+        }
+        
         if (currentSlide + 1 === sliderElements.length) {
             currentSlide = 0;
         }else {
@@ -92,8 +94,10 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
         transitionSlide(1, 0, 0);
     }
     function prevSlide() {
-        removeEventsClick();
-        removeEventsDrag();
+        if (transitionStatus) {
+            return
+        }
+        
         if (currentSlide === 0) {
             currentSlide = sliderElements.length - 1;
         }else {
@@ -111,6 +115,7 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
     }
 
     function transitionSlide(slideIndex, currentSlideIndex, set) {
+        transitionStatus = true;
         setTimeSlideTransition();
         const transitionSlides = document.querySelectorAll('.slide');
         
@@ -122,16 +127,12 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
                 transitionSlides[i].remove();
             }
             drawElements();
-            if (statusEvents) {
-                setEventsClick();
-                setEventsDrag();
-            }
+            
+            transitionStatus = false;
         },timeSlideTransition + 1050)
     }
 
     function startAutoPlay() {
-        removeEventsDrag();
-        statusEvents = false;
         nextBtn.style.display = 'none';
         prevBtn.style.display = 'none';
         startBtn.style.display = 'none';
@@ -142,13 +143,12 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
     
     }
     function stopAutoPlay() {
-        statusEvents = true;
         nextBtn.style.display = 'block';
         prevBtn.style.display = 'block';
         startBtn.style.display = 'block';
         stopBtn.style.display = 'none';
         clearInterval(interval);
-        setEventsClick();setEventsDrag();
+        
     }
 
 
@@ -165,17 +165,6 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
         window.addEventListener('pointerup', stopDrag);
     }
     setEventsDrag();
-
-    function removeEventsDrag() {
-        container.removeEventListener('pointerdown', startDrag);
-    }
-
-    function removeEventsClick() {
-        nextBtn.removeEventListener('click', nextSlide);
-        prevBtn.removeEventListener('click', prevSlide);
-        startBtn.removeEventListener('click', startAutoPlay);
-    }
-
 
 
     function startDrag(event) {

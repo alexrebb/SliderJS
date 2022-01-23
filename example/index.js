@@ -10,6 +10,6 @@ window.addEventListener('DOMContentLoaded', () =>{
         autoPlay: false,
         autoPlayTime: 1500,
         hideButtons: false,
-        startSlide: 0
+        startSlide: 1
     });
-});
+})
