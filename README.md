@@ -1,5 +1,5 @@
 # SliderJS
-
+<br>
 Call startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlayTime, hideButtons, timeSlideTransition, startSlide }) to create slider.
 <br>@param {string} containerId - slider container id
 <br>@param {number} widthSlider - Set width of the slideshow.
