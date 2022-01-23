@@ -9,6 +9,7 @@ window.addEventListener('DOMContentLoaded', () =>{
         timeSlideTransition: 1,    
         autoPlay: false,
         autoPlayTime: 1500,
-        hideButtons: false
+        hideButtons: false,
+        startSlide: 0
     });
 });

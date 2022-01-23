@@ -1,4 +1,4 @@
-function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlayTime, hideButtons, timeSlideTransition }) {
+function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlayTime, hideButtons, timeSlideTransition, startSlide }) {
     
     const slides = document.querySelectorAll('.slide');
     const container = document.querySelector(containerId);
@@ -15,7 +15,7 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
     let currentSlideWasChanged = false;
     let statusEvents = true;
     let interval;
-    let currentSlide = 0;
+    let currentSlide = startSlide;
     let rightSlide = currentSlide + 1;
     let leftSlide = sliderElements.length - 1;
     let defaultDragShift = 0;
