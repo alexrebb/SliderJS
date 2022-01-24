@@ -115,7 +115,7 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
     }
 
     function transitionSlide(slideIndex, currentSlideIndex, set) {
-        transitionStatus = true;
+        
         setTimeSlideTransition();
         const transitionSlides = document.querySelectorAll('.slide');
         
@@ -128,7 +128,7 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
             }
             drawElements();
             
-            transitionStatus = false;
+            
         },timeSlideTransition + 1050)
     }
 
@@ -157,6 +157,8 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
         prevBtn.addEventListener('click', prevSlide);
         startBtn.addEventListener('click', startAutoPlay);
         stopBtn.addEventListener('click', stopAutoPlay);
+        addEventTransitionStart();
+        addEventTransitionEnd();
     }
     setEventsClick();
 
@@ -166,8 +168,25 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
     }
     setEventsDrag();
 
+    function addEventTransitionStart() {
+        container.addEventListener('transitionstart', () => {
+                transitionStatus = true;
+        })
+    }
+        
+    
+    function addEventTransitionEnd() {
+        
+        container.addEventListener('transitionend', () => {
+            transitionStatus = false;
+        })
+    }
+
 
     function startDrag(event) {
+        if (transitionStatus) {
+            return
+        }
         currentSlideWasChanged = false;
         event.preventDefault();
         clickX = event.pageX;
@@ -203,9 +222,12 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
     function deleteNotDigits(str) {
         return +str.replace(/\D/g, '');
     }
+    
 
 }
 
 export default startSlider;
+
+
 
 
