@@ -1,84 +1,126 @@
-function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPlay, autoPlayTime, hideButtons, timeSlideTransition, startSlide }) {
+function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPlay, autoPlayTime, hideButtons, slideTransitionTime, startSlide }) {
     
-    const container = document.querySelector(containerId);
+    const container = document.getElementById(containerId);
+    const wrapper = document.getElementById(wrapperId);
     const slidesElements = getSlides();
-    const wrapper = document.querySelector(wrapperId);
-    
+    container.classList.add('container');
+
     let interval;
     let currentSlide = startSlide - 1;
-    let rightSlide = currentSlide + 1;
-    let leftSlide = slidesElements - 1;
+    let rightSlide = 0;
+    let leftSlide = 0;
     let mouseDownXPosition;
-    let transitionStatus = false;
+    let isTransitioning = false;
     let currentSlideWasChanged = false;
-    
+
+    function setupInputParameters() {
+        if (widthSlider) {
+            container.style.width = widthSlider + 'px';
+        }
+        if (heightSlider) {
+            container.style.height = heightSlider + 'px';
+        }
+
+    }
 
     function getSlides() {
-        const slides = [];
-        for (var i = 0; i < container.children.length; i++) {
-            container.children[i].classList.add('sliderJs_slide');
-            slides.push(container.children[i]);
-            
-        }
+        const slides = [...container.children];
         return slides;
     }
 
     function setupForOneTwoSlides() {
-        const slider = [];
-        if (slidesElements.length === 1) {
-            for (let i = 0; i < slidesElements.length; i++) {
-                slider[i] = slidesElements[i].src;
-            }
-            const img = document.createElement('img')
-            img.src = slider[0];
-            img.classList.add('sliderJs_slide');
-            container.appendChild(img);
-            slidesElements.push(img);
+        if(container.children[0].localName === 'img') {
 
-            const img1 = document.createElement('img')
-            img1.src = slider[0];
-            img1.classList.add('sliderJs_slide');
-            container.appendChild(img1);
-            slidesElements.push(img1);
-        }
-        if (slidesElements.length === 2) {
-            for (let i = 0; i < slidesElements.length; i++) {
-                slider[i] = slidesElements[i].src;
-            }
+            if (slidesElements.length === 1) {
             
-            const img2 = document.createElement('img')
-            img2.src = slider[0];
-            img2.classList.add('sliderJs_slide');
-            container.appendChild(img2);
-            slidesElements.push(img2);
+                const img = document.createElement('img')
+                img.src = slidesElements[0].src;
+                container.appendChild(img);
+                slidesElements.push(img);
+    
+                const img1 = document.createElement('img')
+                img1.src = slidesElements[0].src;
+                container.appendChild(img1);
+                slidesElements.push(img1);
+            }
 
-            const img3 = document.createElement('img')
-            img3.src = slider[1];
-            img3.classList.add('sliderJs_slide');
-            container.appendChild(img3);
-            slidesElements.push(img3);
+            if (slidesElements.length === 2) {
+                
+                const img2 = document.createElement('img')
+                img2.src = slidesElements[0].src;
+                container.appendChild(img2);
+                slidesElements.push(img2);
+    
+                const img3 = document.createElement('img')
+                img3.src = slidesElements[1].src;
+                container.appendChild(img3);
+                slidesElements.push(img3);
+            }
+        }
 
+        if(container.children[0].localName === 'div') {
+            if (slidesElements.length === 1) {
+            
+                const div = document.createElement('div')
+                div.innerHTML = slidesElements[0].innerHTML;
+                div.style.background = slidesElements[0].style.background;
+                container.appendChild(div);
+                slidesElements.push(div);
+    
+                const div1 = document.createElement('div')
+                div1.innerHTML = slidesElements[0].innerHTML;
+                div1.style.background = slidesElements[0].style.background;
+                container.appendChild(div1);
+                slidesElements.push(div1);
+            }
+            if (slidesElements.length === 2) {
+                
+                const div2 = document.createElement('div')
+                div2.innerHTML = slidesElements[0].innerHTML;
+                div2.style.background = slidesElements[0].style.background;
+                container.appendChild(div2);
+                slidesElements.push(div2);
+    
+                const div3 = document.createElement('div')
+                div3.innerHTML = slidesElements[1].innerHTML;
+                div3.style.background = slidesElements[1].style.background;
+                container.appendChild(div3);
+                slidesElements.push(div3);
+            }
         }
     }
 
+    function reindexSlides(direction) {
+        if (direction === 'right' && currentSlide === slidesElements.length - 1) {
+            currentSlide = 0;
+        }else if (direction === 'right'){
+            currentSlide++;
+        }
 
-    function getLeftSlideIndex(step) {
-        if(step === 0) {
-            return leftSlide = slidesElements.length - 1;
-        } else return leftSlide = step - 1; 
+        if (direction === 'left' && currentSlide === 0) {
+            currentSlide = slidesElements.length - 1;
+        }else if (direction === 'left'){
+            currentSlide--;
+        }
+
+        if(currentSlide === 0) {
+            leftSlide = slidesElements.length - 1;
+            rightSlide = currentSlide + 1
+        }else if(currentSlide === slidesElements.length - 1) {
+            rightSlide = 0;
+            leftSlide = currentSlide - 1;
+        }else {
+            leftSlide = currentSlide - 1;
+            rightSlide = currentSlide + 1
+        }
+             
     }
-
-    function getRightSlideIndex(step) {
-        if(step === slidesElements.length - 1) {
-            return rightSlide = 0;
-        } else return rightSlide = step + 1; 
-        
-    }
-
     
     function setupSlides() {
-        getLeftSlideIndex(currentSlide);
-        getRightSlideIndex(currentSlide);
+        reindexSlides();
+        console.log(currentSlide);
+        console.log(leftSlide);
+        console.log(rightSlide);
         for (let i = 0; i < slidesElements.length; i++) {
             slidesElements[i].classList.add('sliderJs_hide');
         }
@@ -96,20 +138,12 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
         slidesElements[currentSlide].style.left = -widthSlider + 'px'; 
         slidesElements[rightSlide].style.left = 0 + 'px';
         
-        setTimeout(function() {
-            if (currentSlide === slidesElements.length - 1) {
-                currentSlide = 0;
-            }else{
-                currentSlide++;
-            }
-            getRightSlideIndex(currentSlide);
-            getLeftSlideIndex(currentSlide);
-            slidesElements[rightSlide].classList.remove('sliderJs_hide');
+        setTimeout(() => {
+            reindexSlides('right');
             slidesElements[rightSlide].style.left = widthSlider + 'px';
+            slidesElements[rightSlide].classList.remove('sliderJs_hide');
             slidesElements[leftSlide].classList.remove('sliderJs_hide');
-        
-        },timeSlideTransition * 1000)
-        
+        },1000)
     }
 
     function transitionSlideLeft() {
@@ -118,48 +152,27 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
         slidesElements[currentSlide].style.left = widthSlider + 'px'; 
         slidesElements[leftSlide].style.left = 0 + 'px';
         
-        setTimeout(function() {
-            if (currentSlide === 0) {
-                currentSlide = slidesElements.length - 1;
-            }else {
-                currentSlide--;
-            }
-            getRightSlideIndex(currentSlide);
-            getLeftSlideIndex(currentSlide);
+        setTimeout(() => {
+            reindexSlides('left');
             slidesElements[leftSlide].style.left = -widthSlider + 'px';
             slidesElements[leftSlide].classList.remove('sliderJs_hide');
             slidesElements[rightSlide].classList.remove('sliderJs_hide');
-        
-        },timeSlideTransition * 1000)
+        },1000)
     }
 
     function nextSlide() {
-        if (transitionStatus) {
+        if (isTransitioning) {
             return
         }
-        
         transitionSlideRight();
     }
 
     function prevSlide() {
-        if (transitionStatus) {
+        if (isTransitioning) {
             return
         }
-        
         transitionSlideLeft();
     }
-
-
-    function setTimeSlideTransition() {
-        if (timeSlideTransition) {
-            for (let i = 0; i < slidesElements.length; i++) {
-                slidesElements[i].style.transition = `all ${timeSlideTransition}s cubic-bezier(.45,.05,.55,.95) 0s`;
-            }
-        }
-    }
-    setTimeout(() => {
-        setTimeSlideTransition();
-    }, 0)
 
     function addControlsBar() {
         const controlsBar = document.createElement('div');
@@ -167,13 +180,15 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
         const nextBtn = document.createElement('button');
         const startBtn = document.createElement('button');
         const stopBtn = document.createElement('button');
+
+        setSlidesTransitionTime();
         
         controlsBar.classList.add('sliderJs_wrapper-button');
         wrapper.appendChild(controlsBar);
-        addElement(prevBtn, 'PREV');
-        addElement(nextBtn, 'NEXT');
-        addElement(startBtn, 'START');
-        addElement(stopBtn, 'STOP');
+        addControlElement(prevBtn, 'PREV');
+        addControlElement(nextBtn, 'NEXT');
+        addControlElement(startBtn, 'START');
+        addControlElement(stopBtn, 'STOP');
         stopBtn.classList.add('sliderJs_hide');
         
         for (let i = 0; i < controlsBar.children.length; i++) {
@@ -185,50 +200,40 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
         startBtn.addEventListener('click', startAutoPlay);
         stopBtn.addEventListener('click', stopAutoPlay);
 
-        function addElement(name, text) {
+        function addControlElement(name, text) {
             controlsBar.appendChild(name);
             name.innerHTML = text;
         }
 
         function startAutoPlay() {
             hideAllButtons();
-            stopBtn.style.display = 'block';
-            stopBtn.style.margin = '0 auto';
-            
+            stopBtn.classList.remove('sliderJs_hide');
             interval = setInterval(nextSlide, autoPlayTime);
+            container.removeEventListener('pointerdown', startDrag);
         }
     
         function stopAutoPlay() {
     
             for (let i = 0; i < controlsBar.children.length; i++) {
-                controlsBar.children[i].style.display = 'block';
-            }
-            stopBtn.style.display = 'none';
+                controlsBar.children[i].classList.remove('sliderJs_hide');
+            }                            
+            stopBtn.classList.add('sliderJs_hide');
             clearInterval(interval);
-            
+            container.addEventListener('pointerdown', startDrag);
         }
+
         function hideAllButtons() {
             for (let i = 0; i < controlsBar.children.length; i++) {
-                controlsBar.children[i].style.display = 'none';
+                controlsBar.children[i].classList.add('sliderJs_hide')
             }
         }
-        function setupInputParameters() {
-            if (widthSlider) {
-                container.style.width = widthSlider + 'px';
-            }
-            if (heightSlider) {
-                container.style.height = heightSlider + 'px';
-            }
-            if (autoPlay && autoPlayTime >= timeSlideTransition) {
-                startAutoPlay();
-            }
-            if (hideButtons) {
-                hideAllButtons();
-            }
+        if (autoPlay && autoPlayTime >= slideTransitionTime) {
+            startAutoPlay();
         }
-        setupInputParameters();
+        if (hideButtons) {
+            hideAllButtons();
+        }
     }
-
 
     function setEventsClickAndDrag() {
         addEventTransitionStart();
@@ -240,7 +245,7 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
 
     function addEventTransitionStart() {
         container.addEventListener('transitionstart', () => {
-                transitionStatus = true;
+            isTransitioning = true;
         })
     }
         
@@ -248,13 +253,13 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
     function addEventTransitionEnd() {
         
         container.addEventListener('transitionend', () => {
-            transitionStatus = false;
+            isTransitioning = false;
         })
     }
 
 
     function startDrag(event) {
-        if (transitionStatus) {
+        if (isTransitioning) {
             return
         }
         currentSlideWasChanged = false;
@@ -263,11 +268,9 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
         window.addEventListener('pointermove', dragging);
     }
 
-
     function stopDrag() {
         window.removeEventListener('pointermove', dragging);
     }
-
 
     function dragging(event) {
         let positionDragX = event.pageX;
@@ -283,15 +286,20 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
             currentSlideWasChanged = true;
         }
     }
-    
+
+    function setSlidesTransitionTime() {
+        if (slideTransitionTime) {
+            for (let i = 0; i < slidesElements.length; i++) {
+                slidesElements[i].style.transition = `all ${slideTransitionTime}s cubic-bezier(.45,.05,.55,.95) 0s`;
+            }
+        }
+    }
+
+    setupInputParameters();
     setupForOneTwoSlides();
-
     setupSlides();
-    
     addControlsBar();
-    
     setEventsClickAndDrag();
-
 }
 
 

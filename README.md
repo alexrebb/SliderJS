@@ -1,7 +1,7 @@
 # SliderJS
 
 <br>
-Call startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlayTime, hideButtons, timeSlideTransition, startSlide }) to create slider.
+Call startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPlay, autoPlayTime, hideButtons, slideTransitionTime, startSlide }) to create slider.
 <br>
 <br>@param {string} wrapperId - slider wrapper id
 <br>@param {string} containerId - slider container id
@@ -11,6 +11,6 @@ Call startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlayTime
 <br>@param {boolean} autoPlay - Set the slides autoplay.
 <br>@param {number} autoPlayTime - Set the slides autoplay inteval, ms
 <br>@param {boolean} hideButtons - Hide controls bar
-<br>@param {number} timeSlideTransition - Set the slides transition inteval, sec
+<br>@param {number} slideTransitionTime - Set the slides transition inteval, sec
 
 <br>You can check example/index.html
