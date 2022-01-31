@@ -1,9 +1,13 @@
-function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPlay, autoPlayTime, hideButtons, slideTransitionTime, startSlide }) {
+function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlayTime, hideButtons, slideTransitionTime, startSlide }) {
     
     const container = document.getElementById(containerId);
-    const wrapper = document.getElementById(wrapperId);
+    const slidesContainer = document.createElement('div');
+    while (container.children.length !== 0) {
+        slidesContainer.appendChild(container.children[0]);
+    }
+    container.appendChild(slidesContainer);
+    slidesContainer.classList.add('container');
     const slidesElements = getSlides();
-    container.classList.add('container');
 
     let interval;
     let currentSlide = startSlide - 1;
@@ -15,80 +19,82 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
 
     function setupInputParameters() {
         if (widthSlider) {
-            container.style.width = widthSlider + 'px';
+            slidesContainer.style.width = widthSlider + 'px';
         }
         if (heightSlider) {
-            container.style.height = heightSlider + 'px';
+            slidesContainer.style.height = heightSlider + 'px';
         }
 
     }
 
     function getSlides() {
-        const slides = [...container.children];
+        const slides = [...slidesContainer.children];
         return slides;
     }
 
+    function appendElement(tagName) {
+        slidesContainer.appendChild(tagName);
+        slidesElements.push(tagName);
+    }
+
     function setupForOneTwoSlides() {
-        if(container.children[0].localName === 'img') {
+        if(slidesContainer.children[0].localName === 'img') {
 
             if (slidesElements.length === 1) {
             
-                const img = document.createElement('img')
-                img.src = slidesElements[0].src;
-                container.appendChild(img);
-                slidesElements.push(img);
+                const img = slidesElements[0].cloneNode(true);
+                appendElement(img);
     
-                const img1 = document.createElement('img')
-                img1.src = slidesElements[0].src;
-                container.appendChild(img1);
-                slidesElements.push(img1);
+                const img1 = slidesElements[0].cloneNode(true);
+                appendElement(img1);
             }
 
             if (slidesElements.length === 2) {
                 
-                const img2 = document.createElement('img')
-                img2.src = slidesElements[0].src;
-                container.appendChild(img2);
-                slidesElements.push(img2);
+                const img2 = slidesElements[0].cloneNode(true);
+                appendElement(img2);
     
-                const img3 = document.createElement('img')
-                img3.src = slidesElements[1].src;
-                container.appendChild(img3);
-                slidesElements.push(img3);
+                const img3 = slidesElements[1].cloneNode(true);
+                appendElement(img3);
             }
         }
 
-        if(container.children[0].localName === 'div') {
+        if(slidesContainer.children[0].localName === 'div') {
+
             if (slidesElements.length === 1) {
             
-                const div = document.createElement('div')
-                div.innerHTML = slidesElements[0].innerHTML;
-                div.style.background = slidesElements[0].style.background;
-                container.appendChild(div);
-                slidesElements.push(div);
+                const div = slidesElements[0].cloneNode(true);
+                appendElement(div);
     
-                const div1 = document.createElement('div')
-                div1.innerHTML = slidesElements[0].innerHTML;
-                div1.style.background = slidesElements[0].style.background;
-                container.appendChild(div1);
-                slidesElements.push(div1);
+                const div1 = slidesElements[0].cloneNode(true);
+                appendElement(div1);
             }
             if (slidesElements.length === 2) {
                 
-                const div2 = document.createElement('div')
-                div2.innerHTML = slidesElements[0].innerHTML;
-                div2.style.background = slidesElements[0].style.background;
-                container.appendChild(div2);
-                slidesElements.push(div2);
+                const div2 = slidesElements[0].cloneNode(true);
+                appendElement(div2);
     
-                const div3 = document.createElement('div')
-                div3.innerHTML = slidesElements[1].innerHTML;
-                div3.style.background = slidesElements[1].style.background;
-                container.appendChild(div3);
-                slidesElements.push(div3);
+                const div3 = slidesElements[1].cloneNode(true);
+                appendElement(div3);
             }
         }
     }
+
+    function  getIndexSlides() {
+        if (currentSlide === 0) {
+            leftSlide = slidesElements.length - 1;
+            rightSlide = currentSlide + 1;
+        }
+        if (currentSlide === slidesElements.length - 1) {
+            rightSlide = 0;
+            leftSlide = currentSlide - 1;
+        }
+        if (currentSlide !== 0 && currentSlide !== slidesElements.length - 1) { 
+            leftSlide = currentSlide - 1;
+            rightSlide = currentSlide + 1;
+        }
+    }
+
 
     function reindexSlides(direction) {
         if (direction === 'right' && currentSlide === slidesElements.length - 1) {
@@ -102,25 +108,12 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
         }else if (direction === 'left'){
             currentSlide--;
         }
-
-        if(currentSlide === 0) {
-            leftSlide = slidesElements.length - 1;
-            rightSlide = currentSlide + 1
-        }else if(currentSlide === slidesElements.length - 1) {
-            rightSlide = 0;
-            leftSlide = currentSlide - 1;
-        }else {
-            leftSlide = currentSlide - 1;
-            rightSlide = currentSlide + 1
-        }
-             
+        getIndexSlides();
     }
+
     
     function setupSlides() {
         reindexSlides();
-        console.log(currentSlide);
-        console.log(leftSlide);
-        console.log(rightSlide);
         for (let i = 0; i < slidesElements.length; i++) {
             slidesElements[i].classList.add('sliderJs_hide');
         }
@@ -143,7 +136,7 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
             slidesElements[rightSlide].style.left = widthSlider + 'px';
             slidesElements[rightSlide].classList.remove('sliderJs_hide');
             slidesElements[leftSlide].classList.remove('sliderJs_hide');
-        },1000)
+        },1000);
     }
 
     function transitionSlideLeft() {
@@ -157,19 +150,19 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
             slidesElements[leftSlide].style.left = -widthSlider + 'px';
             slidesElements[leftSlide].classList.remove('sliderJs_hide');
             slidesElements[rightSlide].classList.remove('sliderJs_hide');
-        },1000)
+        },1000);
     }
 
     function nextSlide() {
         if (isTransitioning) {
-            return
+            return;
         }
         transitionSlideRight();
     }
 
     function prevSlide() {
         if (isTransitioning) {
-            return
+            return;
         }
         transitionSlideLeft();
     }
@@ -184,7 +177,7 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
         setSlidesTransitionTime();
         
         controlsBar.classList.add('sliderJs_wrapper-button');
-        wrapper.appendChild(controlsBar);
+        container.appendChild(controlsBar);
         addControlElement(prevBtn, 'PREV');
         addControlElement(nextBtn, 'NEXT');
         addControlElement(startBtn, 'START');
@@ -200,9 +193,9 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
         startBtn.addEventListener('click', startAutoPlay);
         stopBtn.addEventListener('click', stopAutoPlay);
 
-        function addControlElement(name, text) {
-            controlsBar.appendChild(name);
-            name.innerHTML = text;
+        function addControlElement(buttonsName, text) {
+            controlsBar.appendChild(buttonsName);
+            buttonsName.innerHTML = text;
         }
 
         function startAutoPlay() {
@@ -246,7 +239,7 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
     function addEventTransitionStart() {
         container.addEventListener('transitionstart', () => {
             isTransitioning = true;
-        })
+        });
     }
         
     
@@ -254,13 +247,13 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
         
         container.addEventListener('transitionend', () => {
             isTransitioning = false;
-        })
+        });
     }
 
 
     function startDrag(event) {
         if (isTransitioning) {
-            return
+            return;
         }
         currentSlideWasChanged = false;
         event.preventDefault();
@@ -273,7 +266,7 @@ function startSlider({wrapperId, containerId, widthSlider, heightSlider, autoPla
     }
 
     function dragging(event) {
-        let positionDragX = event.pageX;
+        const positionDragX = event.pageX;
         const dragShift = positionDragX - mouseDownXPosition;
 
         if(dragShift > 50 && dragShift > 0 && !currentSlideWasChanged) {
