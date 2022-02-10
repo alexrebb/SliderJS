@@ -4,7 +4,7 @@ let path = require('path');
 
 module.exports = {
   mode: 'development',
-  entry: './src/JS/script.js',
+  entry: './example/index.js',
   output: {
     filename: 'bundle.js',
     path: __dirname + '/src/JS'

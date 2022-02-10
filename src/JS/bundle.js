@@ -164,148 +164,12 @@ function getRightIndex(currentIndex, elements) {
 
 /***/ }),
 
-/***/ "./src/JS/setEventsClickDrag.js":
-/*!**************************************!*\
-  !*** ./src/JS/setEventsClickDrag.js ***!
-  \**************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ setEventsClickDrag)
-/* harmony export */ });
-
-function setEventsClickDrag(container,prevSlide,nextSlide) {
-    
-    let mouseDownXPosition;
-    let currentSlideWasChanged = false;
-
-    function dragging(event) {
-        const positionDragX = event.pageX;
-        const dragShift = positionDragX - mouseDownXPosition;
-    
-        if(dragShift > 50 && !currentSlideWasChanged) {
-            prevSlide();
-            currentSlideWasChanged = true;
-    
-        }
-        if(dragShift < -50 && !currentSlideWasChanged) {
-            nextSlide();
-            currentSlideWasChanged = true;
-        }
-    }
-    
-    function startDrag(event) {
-        currentSlideWasChanged = false;
-        event.preventDefault();
-        mouseDownXPosition = event.pageX;
-        window.addEventListener('pointermove', dragging);
-    }
-    
-    function stopDrag() {
-        window.removeEventListener('pointermove', dragging);
-    }
-    
-    container.addEventListener('pointerdown', startDrag);
-    window.addEventListener('pointerup', stopDrag);
-}
-
-
-
-/***/ }),
-
-/***/ "./src/JS/setupForOneTwoSlides.js":
-/*!****************************************!*\
-  !*** ./src/JS/setupForOneTwoSlides.js ***!
-  \****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-function setupForOneTwoSlides(container, elements) {
-    function appendElement(element) {
-        container.appendChild(element);
-        elements.push(element);
-    }
-
-    if (elements.length === 1) {
-        appendElement(elements[0].cloneNode(true));
-        appendElement(elements[0].cloneNode(true));
-    }
-    if (elements.length === 2) {
-        appendElement(elements[0].cloneNode(true));
-        appendElement(elements[1].cloneNode(true));
-    }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (setupForOneTwoSlides);
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
-/******/ 			exports: {}
-/******/ 		};
-/******/ 	
-/******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/ 	
-/************************************************************************/
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
-(() => {
+/***/ "./src/JS/script.js":
 /*!**************************!*\
   !*** ./src/JS/script.js ***!
   \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ startSlider)
@@ -452,6 +316,227 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
     (0,_setEventsClickDrag_js__WEBPACK_IMPORTED_MODULE_5__["default"])(container,prevSlide,nextSlide);
     
 }
+
+/***/ }),
+
+/***/ "./src/JS/setEventsClickDrag.js":
+/*!**************************************!*\
+  !*** ./src/JS/setEventsClickDrag.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ setEventsClickDrag)
+/* harmony export */ });
+
+function setEventsClickDrag(container,prevSlide,nextSlide) {
+    
+    let mouseDownXPosition;
+    let currentSlideWasChanged = false;
+
+    function dragging(event) {
+        const positionDragX = event.pageX;
+        const dragShift = positionDragX - mouseDownXPosition;
+    
+        if(dragShift > 50 && !currentSlideWasChanged) {
+            prevSlide();
+            currentSlideWasChanged = true;
+    
+        }
+        if(dragShift < -50 && !currentSlideWasChanged) {
+            nextSlide();
+            currentSlideWasChanged = true;
+        }
+    }
+    
+    function startDrag(event) {
+        currentSlideWasChanged = false;
+        event.preventDefault();
+        mouseDownXPosition = event.pageX;
+        window.addEventListener('pointermove', dragging);
+    }
+    
+    function stopDrag() {
+        window.removeEventListener('pointermove', dragging);
+    }
+    
+    container.addEventListener('pointerdown', startDrag);
+    window.addEventListener('pointerup', stopDrag);
+}
+
+
+
+/***/ }),
+
+/***/ "./src/JS/setupForOneTwoSlides.js":
+/*!****************************************!*\
+  !*** ./src/JS/setupForOneTwoSlides.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function setupForOneTwoSlides(container, elements) {
+    function appendElement(element) {
+        container.appendChild(element);
+        elements.push(element);
+    }
+
+    if (elements.length === 1) {
+        appendElement(elements[0].cloneNode(true));
+        appendElement(elements[0].cloneNode(true));
+    }
+    if (elements.length === 2) {
+        appendElement(elements[0].cloneNode(true));
+        appendElement(elements[1].cloneNode(true));
+    }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (setupForOneTwoSlides);
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+/*!**************************!*\
+  !*** ./example/index.js ***!
+  \**************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _src_JS_script_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../src/JS/script.js */ "./src/JS/script.js");
+/* eslint-disable no-undef */
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    (0,_src_JS_script_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+        containerId: 'container',
+        widthSlider: 600,
+        heightSlider: 400,
+        slideTransitionTime: 1,    
+        autoPlay: false,
+        autoPlayTime: 1500,
+        hideButtons: false,
+        startSlide: 1
+    });
+    
+    (0,_src_JS_script_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+        containerId: 'container1',
+        widthSlider: 600,
+        heightSlider: 400,
+        slideTransitionTime: 1,    
+        autoPlay: false,
+        autoPlayTime: 1500,
+        hideButtons: false,
+        startSlide: 1
+    });
+    
+    (0,_src_JS_script_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+        containerId: 'container2',
+        widthSlider: 600,
+        heightSlider: 400,
+        slideTransitionTime: 1,    
+        autoPlay: false,
+        autoPlayTime: 1500,
+        hideButtons: false,
+        startSlide: 1
+    });
+    
+    (0,_src_JS_script_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+        containerId: 'container3',
+        widthSlider: 600,
+        heightSlider: 400,
+        slideTransitionTime: 1,    
+        autoPlay: false,
+        autoPlayTime: 1500,
+        hideButtons: false,
+        startSlide: 1
+    });
+    
+    (0,_src_JS_script_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+        containerId: 'container4',
+        widthSlider: 600,
+        heightSlider: 400,
+        slideTransitionTime: 1,    
+        autoPlay: false,
+        autoPlayTime: 1500,
+        hideButtons: false,
+        startSlide: 1
+    });
+    
+    (0,_src_JS_script_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+        containerId: 'container5',
+        widthSlider: 600,
+        heightSlider: 400,
+        slideTransitionTime: 1,    
+        autoPlay: false,
+        autoPlayTime: 1500,
+        hideButtons: false,
+        startSlide: 1
+    });
+});
+
+
+
+
 })();
 
 /******/ })()
