@@ -14,7 +14,8 @@ module.exports = {
     "rules": {
         
         "semi": ["warn", "always"],
-        "quotes": ["off", "double"]
+        "quotes": ["off", "double"],
+        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
         
     }
-}
+};

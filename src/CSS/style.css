@@ -37,7 +37,6 @@
     color: #524f4e;
     background: white;
     box-shadow: 0 8px 15px rgba(0, 0, 0, .1);
-    transition: .3s;
   }
   .sliderJs_btn:hover {
     background: #2c3a34;
