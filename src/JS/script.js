@@ -22,17 +22,13 @@ export default function startSlider({containerId, widthSlider, heightSlider, aut
 
     const stateSlider = {
         slidesElements: [],
-        isTransitioning: false
-    }; 
-    
+        isTransitioning: false,
+        currentSlide: startSlide - 1,
+    };
     stateSlider.slidesElements = getSlides();
 
-    const stateIndexes = {
-        currentSlide: startSlide - 1,
-        rightSlide: 0,
-        leftSlide: 0
-    };
-
+    let stateSlideIndexes = {};
+        
     function setupInputParameters() {
         if (widthSlider) {
             slidesContainer.style.width = `${widthSlider}${'px'}`;
@@ -42,7 +38,7 @@ export default function startSlider({containerId, widthSlider, heightSlider, aut
         }
     }
 
-    function setupSlides() {
+    function initialSetupSlides() {
         function appendCopyElementsToContainer(elementsContainer) {
             slidesContainer.appendChild(elementsContainer);
             stateSlider.slidesElements.push(elementsContainer);
@@ -59,24 +55,21 @@ export default function startSlider({containerId, widthSlider, heightSlider, aut
             stateSlider.slidesElements = getSlides();
         }
 
-        updateSlidesIndexes({
-            sliderContainer: stateSlider.slidesElements,
-            leftIndex: stateIndexes.leftSlide,
-            rightIndex: stateIndexes.rightSlide,
-            currentIndex: stateIndexes.currentSlide
-        });
-
+        stateSlideIndexes = updateSlidesIndexes({
+            currentIndex: stateSlider.currentSlide,
+            sliderContainer: stateSlider.slidesElements
+        }); 
+        
         for (let i = 0; i < stateSlider.slidesElements.length; i+=1) {
             stateSlider.slidesElements[i].classList.add('sliderJs_hide');
         }
-        stateSlider.slidesElements[stateIndexes.currentSlide].classList.remove('sliderJs_hide');
-        stateSlider.slidesElements[stateIndexes.rightSlide].classList.remove('sliderJs_hide');
-        stateSlider.slidesElements[stateIndexes.rightSlide].style.left = `${widthSlider}${'px'}`;
-        stateSlider.slidesElements[stateIndexes.leftSlide].classList.remove('sliderJs_hide');
-        stateSlider.slidesElements[stateIndexes.leftSlide].style.left = `${-widthSlider}${'px'}`;
+        stateSlider.slidesElements[stateSlideIndexes.updateCurrentIndex].classList.remove('sliderJs_hide');
+        stateSlider.slidesElements[stateSlideIndexes.updateRightIndex].classList.remove('sliderJs_hide');
+        stateSlider.slidesElements[stateSlideIndexes.updateRightIndex].style.left = `${widthSlider}${'px'}`;
+        stateSlider.slidesElements[stateSlideIndexes.updateLeftIndex].classList.remove('sliderJs_hide');
+        stateSlider.slidesElements[stateSlideIndexes.updateLeftIndex].style.left = `${-widthSlider}${'px'}`;
 
     }
-
 
     function slideNext() {
         if (stateSlider.isTransitioning) {
@@ -85,26 +78,34 @@ export default function startSlider({containerId, widthSlider, heightSlider, aut
         transitionSlides({
             direction: 'right',
             sliderContainer: stateSlider.slidesElements,
-            leftIndex: stateIndexes.leftSlide,
-            rightIndex: stateIndexes.rightSlide,
-            currentIndex: stateIndexes.currentSlide,
-            width: widthSlider
+            stateIndexes: stateSlideIndexes,
+            width: widthSlider,
+        });
+        
+        stateSlideIndexes = updateSlidesIndexes({
+            direction: 'right',
+            currentIndex: stateSlideIndexes.updateCurrentIndex,
+            sliderContainer: stateSlider.slidesElements
         });
     }
 
-    function slidePrev() {
+    const slidePrev = () => {
         if (stateSlider.isTransitioning) {
             return;
         }
         transitionSlides({
             direction: 'left',
             sliderContainer: stateSlider.slidesElements,
-            leftIndex: stateIndexes.leftSlide,
-            rightIndex: stateIndexes.rightSlide,
-            currentIndex: stateIndexes.currentSlide,
-            width: widthSlider
+            stateIndexes: stateSlideIndexes,
+            width: widthSlider,
         });
-    }
+        stateSlideIndexes = updateSlidesIndexes({
+            direction: 'left',
+            currentIndex: stateSlideIndexes.updateCurrentIndex,
+            sliderContainer: stateSlider.slidesElements
+        });
+    };
+
 
     function addEventTransitionStart() {
         container.addEventListener('transitionstart', () => {
@@ -118,6 +119,7 @@ export default function startSlider({containerId, widthSlider, heightSlider, aut
         });
     }
 
+
     function setSlidesTransitionTime() {
         if (!slideTransitionTime) {
             return;
@@ -129,9 +131,9 @@ export default function startSlider({containerId, widthSlider, heightSlider, aut
 
     addEventTransitionStart();
     addEventTransitionEnd();
-    setupSlides();
-    setSlidesTransitionTime();
     setupInputParameters();
+    initialSetupSlides();
+    setSlidesTransitionTime();
     addControlsBar({
         container,
         slideNext,

@@ -86,12 +86,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ startSlider)
 /* harmony export */ });
-/* harmony import */ var _updateLeftIndex_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./updateLeftIndex.js */ "./src/JS/updateLeftIndex.js");
-/* harmony import */ var _updateRightIndex_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./updateRightIndex.js */ "./src/JS/updateRightIndex.js");
-/* harmony import */ var _updateCurrentIndex_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./updateCurrentIndex.js */ "./src/JS/updateCurrentIndex.js");
-/* harmony import */ var _addControlsBar_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./addControlsBar.js */ "./src/JS/addControlsBar.js");
-/* harmony import */ var _setEventsClickDrag_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./setEventsClickDrag.js */ "./src/JS/setEventsClickDrag.js");
-
+/* harmony import */ var _updateSlidesIndexes_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./updateSlidesIndexes.js */ "./src/JS/updateSlidesIndexes.js");
+/* harmony import */ var _addControlsBar_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./addControlsBar.js */ "./src/JS/addControlsBar.js");
+/* harmony import */ var _setEventsClickDrag_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./setEventsClickDrag.js */ "./src/JS/setEventsClickDrag.js");
+/* harmony import */ var _transitionSlides_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./transitionSlides.js */ "./src/JS/transitionSlides.js");
 
 
 
@@ -114,14 +112,15 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
         return slides;
     }
 
-    const slidesElements = getSlides();
+    const stateSlider = {
+        slidesElements: [],
+        isTransitioning: false,
+        currentSlide: startSlide - 1,
+    };
+    stateSlider.slidesElements = getSlides();
 
-    let currentSlide = startSlide - 1;
-    let rightSlide = 0;
-    let leftSlide = 0;
-    let isTransitioning = false;
-    
-
+    let stateSlideIndexes = {};
+        
     function setupInputParameters() {
         if (widthSlider) {
             slidesContainer.style.width = `${widthSlider}${'px'}`;
@@ -131,111 +130,103 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
         }
     }
 
-    function updateSlidesIndexes(directionSlide) {
-        if(directionSlide) {
-            currentSlide = (0,_updateCurrentIndex_js__WEBPACK_IMPORTED_MODULE_2__["default"])(directionSlide, currentSlide, slidesElements);
-        }
-        rightSlide = (0,_updateRightIndex_js__WEBPACK_IMPORTED_MODULE_1__["default"])(currentSlide, slidesElements);
-        leftSlide = (0,_updateLeftIndex_js__WEBPACK_IMPORTED_MODULE_0__["default"])(currentSlide, slidesElements);
-    }
-
-    function setupSlides() {
+    function initialSetupSlides() {
         function appendCopyElementsToContainer(elementsContainer) {
             slidesContainer.appendChild(elementsContainer);
-            slidesElements.push(elementsContainer);
+            stateSlider.slidesElements.push(elementsContainer);
         }
     
-        if (slidesElements.length === 1) {
-            appendCopyElementsToContainer(slidesElements[0].cloneNode(true));
-            appendCopyElementsToContainer(slidesElements[0].cloneNode(true));
+        if (stateSlider.slidesElements.length === 1) {
+            appendCopyElementsToContainer(stateSlider.slidesElements[0].cloneNode(true));
+            appendCopyElementsToContainer(stateSlider.slidesElements[0].cloneNode(true));
+            stateSlider.slidesElements = getSlides();
         }
-        if (slidesElements.length === 2) {
-            appendCopyElementsToContainer(slidesElements[0].cloneNode(true));
-            appendCopyElementsToContainer(slidesElements[1].cloneNode(true));
+        if (stateSlider.slidesElements.length === 2) {
+            appendCopyElementsToContainer(stateSlider.slidesElements[0].cloneNode(true));
+            appendCopyElementsToContainer(stateSlider.slidesElements[1].cloneNode(true));
+            stateSlider.slidesElements = getSlides();
         }
 
-        updateSlidesIndexes();
-
-        for (let i = 0; i < slidesElements.length; i+=1) {
-            slidesElements[i].classList.add('sliderJs_hide');
+        stateSlideIndexes = (0,_updateSlidesIndexes_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+            currentIndex: stateSlider.currentSlide,
+            sliderContainer: stateSlider.slidesElements
+        }); 
+        
+        for (let i = 0; i < stateSlider.slidesElements.length; i+=1) {
+            stateSlider.slidesElements[i].classList.add('sliderJs_hide');
         }
-        slidesElements[currentSlide].classList.remove('sliderJs_hide');
-        slidesElements[rightSlide].classList.remove('sliderJs_hide');
-        slidesElements[rightSlide].style.left = `${widthSlider}${'px'}`;
-        slidesElements[leftSlide].classList.remove('sliderJs_hide');
-        slidesElements[leftSlide].style.left = `${-widthSlider}${'px'}`;
+        stateSlider.slidesElements[stateSlideIndexes.updateCurrentIndex].classList.remove('sliderJs_hide');
+        stateSlider.slidesElements[stateSlideIndexes.updateRightIndex].classList.remove('sliderJs_hide');
+        stateSlider.slidesElements[stateSlideIndexes.updateRightIndex].style.left = `${widthSlider}${'px'}`;
+        stateSlider.slidesElements[stateSlideIndexes.updateLeftIndex].classList.remove('sliderJs_hide');
+        stateSlider.slidesElements[stateSlideIndexes.updateLeftIndex].style.left = `${-widthSlider}${'px'}`;
 
-    }
-
-    function transitionSlideRight() {
-        
-        slidesElements[leftSlide].classList.add('sliderJs_hide');
-        slidesElements[currentSlide].style.left = `${-widthSlider}${'px'}`; 
-        slidesElements[rightSlide].style.left = `${0}${'px'}`;
-        
-        setTimeout(() => {
-            updateSlidesIndexes('right');
-            slidesElements[rightSlide].style.left = `${widthSlider}${'px'}`;
-            slidesElements[rightSlide].classList.remove('sliderJs_hide');
-            slidesElements[leftSlide].classList.remove('sliderJs_hide');
-        },1000);
-    }
-
-    function transitionSlideLeft() {
-        
-        slidesElements[rightSlide].classList.add('sliderJs_hide');
-        slidesElements[currentSlide].style.left = `${widthSlider}${'px'}`; 
-        slidesElements[leftSlide].style.left = `${0}${'px'}`;
-        
-        setTimeout(() => {
-            updateSlidesIndexes('left');
-            slidesElements[leftSlide].style.left = `${-widthSlider}${'px'}`;
-            slidesElements[leftSlide].classList.remove('sliderJs_hide');
-            slidesElements[rightSlide].classList.remove('sliderJs_hide');
-        },1000);
     }
 
     function slideNext() {
-        if (isTransitioning) {
+        if (stateSlider.isTransitioning) {
             return;
         }
-        transitionSlideRight();
+        (0,_transitionSlides_js__WEBPACK_IMPORTED_MODULE_3__["default"])({
+            direction: 'right',
+            sliderContainer: stateSlider.slidesElements,
+            stateIndexes: stateSlideIndexes,
+            width: widthSlider,
+        });
+        
+        stateSlideIndexes = (0,_updateSlidesIndexes_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+            direction: 'right',
+            currentIndex: stateSlideIndexes.updateCurrentIndex,
+            sliderContainer: stateSlider.slidesElements
+        });
     }
 
-    function slidePrev() {
-        if (isTransitioning) {
+    const slidePrev = () => {
+        if (stateSlider.isTransitioning) {
             return;
         }
-        transitionSlideLeft();
-    }
+        (0,_transitionSlides_js__WEBPACK_IMPORTED_MODULE_3__["default"])({
+            direction: 'left',
+            sliderContainer: stateSlider.slidesElements,
+            stateIndexes: stateSlideIndexes,
+            width: widthSlider,
+        });
+        stateSlideIndexes = (0,_updateSlidesIndexes_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+            direction: 'left',
+            currentIndex: stateSlideIndexes.updateCurrentIndex,
+            sliderContainer: stateSlider.slidesElements
+        });
+    };
+
 
     function addEventTransitionStart() {
         container.addEventListener('transitionstart', () => {
-            isTransitioning = true;
+            stateSlider.isTransitioning = true;
         });
     }
     
     function addEventTransitionEnd() {
         container.addEventListener('transitionend', () => {
-            isTransitioning = false;
+            stateSlider.isTransitioning = false;
         });
     }
 
-    addEventTransitionStart();
-    addEventTransitionEnd();
 
     function setSlidesTransitionTime() {
         if (!slideTransitionTime) {
             return;
         }
-        for (let i = 0; i < slidesElements.length; i+=1) {
-            slidesElements[i].style.transition = `all ${slideTransitionTime}s cubic-bezier(.45,.05,.55,.95) 0s`;
+        for (let i = 0; i < stateSlider.slidesElements.length; i+=1) {
+            stateSlider.slidesElements[i].style.transition = `all ${slideTransitionTime}s cubic-bezier(.45,.05,.55,.95) 0s`;
         }
     }
-    setupSlides();
-    setSlidesTransitionTime();
+
+    addEventTransitionStart();
+    addEventTransitionEnd();
     setupInputParameters();
-    (0,_addControlsBar_js__WEBPACK_IMPORTED_MODULE_3__["default"])({
+    initialSetupSlides();
+    setSlidesTransitionTime();
+    (0,_addControlsBar_js__WEBPACK_IMPORTED_MODULE_1__["default"])({
         container,
         slideNext,
         slidePrev
@@ -246,7 +237,7 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
         slideTransitionTime,
         hideButtons
     });
-    (0,_setEventsClickDrag_js__WEBPACK_IMPORTED_MODULE_4__["default"])(container, slidePrev, slideNext);
+    (0,_setEventsClickDrag_js__WEBPACK_IMPORTED_MODULE_2__["default"])(container, slidePrev, slideNext);
     
 }
 
@@ -303,89 +294,119 @@ function setEventsClickDrag(container,slidePrev,slideNext) {
 
 /***/ }),
 
-/***/ "./src/JS/updateCurrentIndex.js":
-/*!**************************************!*\
-  !*** ./src/JS/updateCurrentIndex.js ***!
-  \**************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ updateCurrentIndex)
-/* harmony export */ });
-function updateCurrentIndex(direction, currentIndex, elements) {
-    let currentIndexValue;
-    if (direction === 'right' && currentIndex === elements.length - 1) {
-        currentIndexValue = 0;
-    }else if (direction === 'right'){
-        currentIndexValue = currentIndex + 1;
-    }
-
-    if (direction === 'left' && currentIndex === 0) {
-        currentIndexValue = elements.length - 1;
-    }else if (direction === 'left'){
-        currentIndexValue = currentIndex - 1;
-    }
-    return currentIndexValue;
-}
-
-/***/ }),
-
-/***/ "./src/JS/updateLeftIndex.js":
-/*!***********************************!*\
-  !*** ./src/JS/updateLeftIndex.js ***!
-  \***********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ updateLeftIndex)
-/* harmony export */ });
-function updateLeftIndex(currentIndex, elements) {
-    let leftIndex;
-
-    if (currentIndex === 0) {
-        leftIndex = elements.length - 1;
-    }
-    if (currentIndex === elements.length - 1) {
-        leftIndex = currentIndex - 1;
-    }
-    if (currentIndex !== 0 && currentIndex !== elements.length - 1) { 
-        leftIndex = currentIndex - 1;
-    }
-    return leftIndex;
-}
-
-/***/ }),
-
-/***/ "./src/JS/updateRightIndex.js":
+/***/ "./src/JS/transitionSlides.js":
 /*!************************************!*\
-  !*** ./src/JS/updateRightIndex.js ***!
+  !*** ./src/JS/transitionSlides.js ***!
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ updateRightIndex)
+/* harmony export */   "default": () => (/* binding */ transitionSlides)
 /* harmony export */ });
-function updateRightIndex(currentIndex, elements) {
-    let rightIndex;
+/* harmony import */ var _updateSlidesIndexes_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./updateSlidesIndexes.js */ "./src/JS/updateSlidesIndexes.js");
 
-    if (currentIndex === 0) {
-        rightIndex = currentIndex + 1;
+
+function transitionSlides({direction, sliderContainer, width, stateIndexes} ) {
+
+    let updateSlides = {};
+
+    if (direction === 'right') {
+
+        sliderContainer[stateIndexes.updateLeftIndex].classList.add('sliderJs_hide');
+        sliderContainer[stateIndexes.updateCurrentIndex].style.left = `${-width}${'px'}`; 
+        sliderContainer[stateIndexes.updateRightIndex].style.left = `${0}${'px'}`;
+    
+        setTimeout(() => {
+            
+            updateSlides = (0,_updateSlidesIndexes_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+                direction: 'right',
+                currentIndex: stateIndexes.updateCurrentIndex,
+                sliderContainer,
+            });
+
+            sliderContainer[updateSlides.updateRightIndex].style.left = `${width}${'px'}`;
+            sliderContainer[updateSlides.updateRightIndex].classList.remove('sliderJs_hide');
+            sliderContainer[updateSlides.updateLeftIndex].classList.remove('sliderJs_hide');
+        },1000);
     }
-    if (currentIndex === elements.length - 1) {
-        rightIndex = 0;
+    if (direction === 'left') {
+
+        sliderContainer[stateIndexes.updateRightIndex].classList.add('sliderJs_hide');
+        sliderContainer[stateIndexes.updateCurrentIndex].style.left = `${width}${'px'}`; 
+        sliderContainer[stateIndexes.updateLeftIndex].style.left = `${0}${'px'}`;
+    
+        setTimeout(() => {
+            updateSlides = (0,_updateSlidesIndexes_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+                    direction: 'left',
+                    currentIndex: stateIndexes.updateCurrentIndex,
+                    sliderContainer,
+                });
+
+            sliderContainer[updateSlides.updateLeftIndex].style.left = `${-width}${'px'}`;
+            sliderContainer[updateSlides.updateLeftIndex].classList.remove('sliderJs_hide');
+            sliderContainer[updateSlides.updateRightIndex].classList.remove('sliderJs_hide');
+        },1000);
     }
-    if (currentIndex !== 0 && currentIndex !== elements.length - 1) { 
-        rightIndex = currentIndex + 1;
-    }
-    return rightIndex;
 }
 
 
+/***/ }),
 
+/***/ "./src/JS/updateSlidesIndexes.js":
+/*!***************************************!*\
+  !*** ./src/JS/updateSlidesIndexes.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ updateSlidesIndexes)
+/* harmony export */ });
+function updateSlidesIndexes({direction, currentIndex, sliderContainer}) {
+    
+    let updateCurrentIndex = 0;
+    let updateLeftIndex;
+    let updateRightIndex;
+
+    // Update currentIndex
+    if (direction === 'right' && currentIndex === sliderContainer.length - 1) {
+        updateCurrentIndex = 0;
+    }else if (direction === 'right'){
+        updateCurrentIndex = currentIndex + 1;
+    }
+
+    if (direction === 'left' && currentIndex === 0) {
+        updateCurrentIndex = sliderContainer.length - 1;
+    }else if (direction === 'left'){
+        updateCurrentIndex = currentIndex - 1;
+    }
+
+    // Update leftIndex
+
+    if (updateCurrentIndex === 0) {
+        updateLeftIndex = sliderContainer.length - 1;
+    }
+    if (updateCurrentIndex === sliderContainer.length - 1) {
+        updateLeftIndex = updateCurrentIndex - 1;
+    }
+    if (updateCurrentIndex !== 0 && updateCurrentIndex !== sliderContainer.length - 1) { 
+        updateLeftIndex = updateCurrentIndex - 1;
+    }
+
+    // Update rightIndex
+
+    if (updateCurrentIndex === 0) {
+        updateRightIndex = updateCurrentIndex + 1;
+    }
+    if (updateCurrentIndex === sliderContainer.length - 1) {
+        updateRightIndex = 0;
+    }
+    if (updateCurrentIndex !== 0 && updateCurrentIndex !== sliderContainer.length - 1) { 
+        updateRightIndex = updateCurrentIndex + 1;
+    }
+    return {updateCurrentIndex, updateLeftIndex, updateRightIndex};
+}
 
 
 

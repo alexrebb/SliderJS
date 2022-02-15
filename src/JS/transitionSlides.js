@@ -1,43 +1,44 @@
 import updateSlidesIndexes from "./updateSlidesIndexes.js";
 
-export default function transitionSlides({direction, sliderContainer, leftIndex, rightIndex, currentIndex, width} ) {
+export default function transitionSlides({direction, sliderContainer, width, stateIndexes} ) {
+
+    let updateSlides = {};
 
     if (direction === 'right') {
 
-        sliderContainer[leftIndex].classList.add('sliderJs_hide');
-        sliderContainer[currentIndex].style.left = `${-width}${'px'}`; 
-        sliderContainer[rightIndex].style.left = `${0}${'px'}`;
+        sliderContainer[stateIndexes.updateLeftIndex].classList.add('sliderJs_hide');
+        sliderContainer[stateIndexes.updateCurrentIndex].style.left = `${-width}${'px'}`; 
+        sliderContainer[stateIndexes.updateRightIndex].style.left = `${0}${'px'}`;
     
         setTimeout(() => {
-            updateSlidesIndexes({
+            
+            updateSlides = updateSlidesIndexes({
                 direction: 'right',
-                currentIndex,
-                rightIndex,
-                leftIndex,
-                sliderContainer
+                currentIndex: stateIndexes.updateCurrentIndex,
+                sliderContainer,
             });
-            sliderContainer[rightIndex].style.left = `${width}${'px'}`;
-            sliderContainer[rightIndex].classList.remove('sliderJs_hide');
-            sliderContainer[leftIndex].classList.remove('sliderJs_hide');
+
+            sliderContainer[updateSlides.updateRightIndex].style.left = `${width}${'px'}`;
+            sliderContainer[updateSlides.updateRightIndex].classList.remove('sliderJs_hide');
+            sliderContainer[updateSlides.updateLeftIndex].classList.remove('sliderJs_hide');
         },1000);
     }
     if (direction === 'left') {
 
-        sliderContainer[rightIndex].classList.add('sliderJs_hide');
-        sliderContainer[currentIndex].style.left = `${width}${'px'}`; 
-        sliderContainer[leftIndex].style.left = `${0}${'px'}`;
+        sliderContainer[stateIndexes.updateRightIndex].classList.add('sliderJs_hide');
+        sliderContainer[stateIndexes.updateCurrentIndex].style.left = `${width}${'px'}`; 
+        sliderContainer[stateIndexes.updateLeftIndex].style.left = `${0}${'px'}`;
     
         setTimeout(() => {
-            updateSlidesIndexes({
+            updateSlides = updateSlidesIndexes({
                     direction: 'left',
-                    currentIndex,
-                    rightIndex,
-                    leftIndex,
-                    sliderContainer
+                    currentIndex: stateIndexes.updateCurrentIndex,
+                    sliderContainer,
                 });
-            sliderContainer[leftIndex].style.left = `${-width}${'px'}`;
-            sliderContainer[leftIndex].classList.remove('sliderJs_hide');
-            sliderContainer[rightIndex].classList.remove('sliderJs_hide');
+
+            sliderContainer[updateSlides.updateLeftIndex].style.left = `${-width}${'px'}`;
+            sliderContainer[updateSlides.updateLeftIndex].classList.remove('sliderJs_hide');
+            sliderContainer[updateSlides.updateRightIndex].classList.remove('sliderJs_hide');
         },1000);
     }
 }
