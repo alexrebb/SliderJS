@@ -309,8 +309,6 @@ __webpack_require__.r(__webpack_exports__);
 
 function transitionSlides({direction, sliderContainer, width, stateIndexes} ) {
 
-    let updateSlides = {};
-
     if (direction === 'right') {
 
         sliderContainer[stateIndexes.updateLeftIndex].classList.add('sliderJs_hide');
@@ -319,15 +317,15 @@ function transitionSlides({direction, sliderContainer, width, stateIndexes} ) {
     
         setTimeout(() => {
             
-            updateSlides = (0,_updateSlidesIndexes_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+            const stateIndexesAfterRightTransition = (0,_updateSlidesIndexes_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
                 direction: 'right',
                 currentIndex: stateIndexes.updateCurrentIndex,
                 sliderContainer,
             });
 
-            sliderContainer[updateSlides.updateRightIndex].style.left = `${width}${'px'}`;
-            sliderContainer[updateSlides.updateRightIndex].classList.remove('sliderJs_hide');
-            sliderContainer[updateSlides.updateLeftIndex].classList.remove('sliderJs_hide');
+            sliderContainer[stateIndexesAfterRightTransition.updateRightIndex].style.left = `${width}${'px'}`;
+            sliderContainer[stateIndexesAfterRightTransition.updateRightIndex].classList.remove('sliderJs_hide');
+            sliderContainer[stateIndexesAfterRightTransition.updateLeftIndex].classList.remove('sliderJs_hide');
         },1000);
     }
     if (direction === 'left') {
@@ -337,15 +335,15 @@ function transitionSlides({direction, sliderContainer, width, stateIndexes} ) {
         sliderContainer[stateIndexes.updateLeftIndex].style.left = `${0}${'px'}`;
     
         setTimeout(() => {
-            updateSlides = (0,_updateSlidesIndexes_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
+            const stateIndexesAfterLeftTransition = (0,_updateSlidesIndexes_js__WEBPACK_IMPORTED_MODULE_0__["default"])({
                     direction: 'left',
                     currentIndex: stateIndexes.updateCurrentIndex,
                     sliderContainer,
                 });
 
-            sliderContainer[updateSlides.updateLeftIndex].style.left = `${-width}${'px'}`;
-            sliderContainer[updateSlides.updateLeftIndex].classList.remove('sliderJs_hide');
-            sliderContainer[updateSlides.updateRightIndex].classList.remove('sliderJs_hide');
+            sliderContainer[stateIndexesAfterLeftTransition.updateLeftIndex].style.left = `${-width}${'px'}`;
+            sliderContainer[stateIndexesAfterLeftTransition.updateLeftIndex].classList.remove('sliderJs_hide');
+            sliderContainer[stateIndexesAfterLeftTransition.updateRightIndex].classList.remove('sliderJs_hide');
         },1000);
     }
 }
