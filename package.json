@@ -1,11 +1,8 @@
 {
   "name": "slider",
   "version": "1.0.0",
-  "description": "<br>\r Call startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlayTime, hideButtons, slideTransitionTime, startSlide }) to create slider.\r <br>\r <br>@param {string} containerId - slider container id\r <br>@param {number} widthSlider - Set width of the slideshow.\r <br>@param {number} heightSlider - Set height of the slideshow.\r <br>@param {number} startSlide - Set the first slide in the slideshow.\r <br>@param {boolean} autoPlay - Set the slides autoplay.\r <br>@param {number} autoPlayTime - Set the slides autoplay inteval, ms\r <br>@param {boolean} hideButtons - Hide controls bar\r <br>@param {number} slideTransitionTime - Set the slides transition inteval, sec",
-  "main": "index.js",
-  "directories": {
-    "example": "example"
-  },
+  "description": "<br>\r SlidesJS is a simple slider with custom settings for your website.",
+  "main": "script.js",
   "dependencies": {},
   "devDependencies": {
     "babel-eslint": "^10.1.0",
@@ -17,7 +14,7 @@
     "prettier": "2.5.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC"

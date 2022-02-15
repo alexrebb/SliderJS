@@ -1,4 +1,4 @@
-export default function addControlsBar(container, nextSlide, autoPlayTime, prevSlide, autoPlay, slideTransitionTime, hideButtons) {
+export default function addControlsBar({container, slideNext, slidePrev}, {autoPlayTime, autoPlay, slideTransitionTime, hideButtons}) {
 
     const controlsBar = document.createElement('div');
     const prevBtn = document.createElement('button');
@@ -16,7 +16,7 @@ export default function addControlsBar(container, nextSlide, autoPlayTime, prevS
     function startAutoPlay() {
         hideAllButtons();
         stopBtn.classList.remove('sliderJs_hide');
-        interval = setInterval(nextSlide, autoPlayTime);
+        interval = setInterval(slideNext, autoPlayTime);
     }
 
     function stopAutoPlay() {
@@ -45,8 +45,8 @@ export default function addControlsBar(container, nextSlide, autoPlayTime, prevS
         controlsBar.children[i].classList.add('sliderJs_btn');
     }
 
-    nextBtn.addEventListener('click', nextSlide);
-    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', slideNext);
+    prevBtn.addEventListener('click', slidePrev);
     startBtn.addEventListener('click', startAutoPlay);
     stopBtn.addEventListener('click', stopAutoPlay);
 

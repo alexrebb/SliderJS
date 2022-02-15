@@ -1,5 +1,5 @@
 
-export default function setEventsClickDrag(container,prevSlide,nextSlide) {
+export default function setEventsClickDrag(container,slidePrev,slideNext) {
     
     let mouseDownXPosition;
     let currentSlideWasChanged = false;
@@ -9,12 +9,12 @@ export default function setEventsClickDrag(container,prevSlide,nextSlide) {
         const dragShift = positionDragX - mouseDownXPosition;
     
         if(dragShift > 50 && !currentSlideWasChanged) {
-            prevSlide();
+            slidePrev();
             currentSlideWasChanged = true;
     
         }
         if(dragShift < -50 && !currentSlideWasChanged) {
-            nextSlide();
+            slideNext();
             currentSlideWasChanged = true;
         }
     }
@@ -23,14 +23,14 @@ export default function setEventsClickDrag(container,prevSlide,nextSlide) {
         currentSlideWasChanged = false;
         event.preventDefault();
         mouseDownXPosition = event.pageX;
-        window.addEventListener('pointermove', dragging);
+        container.addEventListener('pointermove', dragging);
     }
     
     function stopDrag() {
-        window.removeEventListener('pointermove', dragging);
+        container.removeEventListener('pointermove', dragging);
     }
     
     container.addEventListener('pointerdown', startDrag);
-    window.addEventListener('pointerup', stopDrag);
+    container.addEventListener('pointerup', stopDrag);
 }
 

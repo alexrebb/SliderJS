@@ -12,7 +12,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ addControlsBar)
 /* harmony export */ });
-function addControlsBar(container, nextSlide, autoPlayTime, prevSlide, autoPlay, slideTransitionTime, hideButtons) {
+function addControlsBar({container, slideNext, slidePrev}, {autoPlayTime, autoPlay, slideTransitionTime, hideButtons}) {
 
     const controlsBar = document.createElement('div');
     const prevBtn = document.createElement('button');
@@ -30,7 +30,7 @@ function addControlsBar(container, nextSlide, autoPlayTime, prevSlide, autoPlay,
     function startAutoPlay() {
         hideAllButtons();
         stopBtn.classList.remove('sliderJs_hide');
-        interval = setInterval(nextSlide, autoPlayTime);
+        interval = setInterval(slideNext, autoPlayTime);
     }
 
     function stopAutoPlay() {
@@ -59,8 +59,8 @@ function addControlsBar(container, nextSlide, autoPlayTime, prevSlide, autoPlay,
         controlsBar.children[i].classList.add('sliderJs_btn');
     }
 
-    nextBtn.addEventListener('click', nextSlide);
-    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', slideNext);
+    prevBtn.addEventListener('click', slidePrev);
     startBtn.addEventListener('click', startAutoPlay);
     stopBtn.addEventListener('click', stopAutoPlay);
 
@@ -76,94 +76,6 @@ function addControlsBar(container, nextSlide, autoPlayTime, prevSlide, autoPlay,
 
 /***/ }),
 
-/***/ "./src/JS/getCurrentIndex.js":
-/*!***********************************!*\
-  !*** ./src/JS/getCurrentIndex.js ***!
-  \***********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ getCurrentIndex)
-/* harmony export */ });
-function getCurrentIndex(direction, currentIndex, elements) {
-    let currentIndexValue;
-    if (direction === 'right' && currentIndex === elements.length - 1) {
-        currentIndexValue = 0;
-    }else if (direction === 'right'){
-        currentIndexValue = currentIndex + 1;
-    }
-
-    if (direction === 'left' && currentIndex === 0) {
-        currentIndexValue = elements.length - 1;
-    }else if (direction === 'left'){
-        currentIndexValue = currentIndex - 1;
-    }
-    return currentIndexValue;
-}
-
-/***/ }),
-
-/***/ "./src/JS/getLeftIndex.js":
-/*!********************************!*\
-  !*** ./src/JS/getLeftIndex.js ***!
-  \********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ getLeftIndex)
-/* harmony export */ });
-function getLeftIndex(currentIndex, elements) {
-    let leftIndex;
-
-    if (currentIndex === 0) {
-        leftIndex = elements.length - 1;
-    }
-    if (currentIndex === elements.length - 1) {
-        leftIndex = currentIndex - 1;
-    }
-    if (currentIndex !== 0 && currentIndex !== elements.length - 1) { 
-        leftIndex = currentIndex - 1;
-    }
-    return leftIndex;
-}
-
-/***/ }),
-
-/***/ "./src/JS/getRightIndex.js":
-/*!*********************************!*\
-  !*** ./src/JS/getRightIndex.js ***!
-  \*********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ getRightIndex)
-/* harmony export */ });
-function getRightIndex(currentIndex, elements) {
-    let rightIndex;
-
-    if (currentIndex === 0) {
-        rightIndex = currentIndex + 1;
-    }
-    if (currentIndex === elements.length - 1) {
-        rightIndex = 0;
-    }
-    if (currentIndex !== 0 && currentIndex !== elements.length - 1) { 
-        rightIndex = currentIndex + 1;
-    }
-    return rightIndex;
-}
-
-
-
-
-
-
-
-/***/ }),
-
 /***/ "./src/JS/script.js":
 /*!**************************!*\
   !*** ./src/JS/script.js ***!
@@ -174,13 +86,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ startSlider)
 /* harmony export */ });
-/* harmony import */ var _getLeftIndex_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./getLeftIndex.js */ "./src/JS/getLeftIndex.js");
-/* harmony import */ var _getRightIndex_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./getRightIndex.js */ "./src/JS/getRightIndex.js");
-/* harmony import */ var _getCurrentIndex_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./getCurrentIndex.js */ "./src/JS/getCurrentIndex.js");
-/* harmony import */ var _setupForOneTwoSlides_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./setupForOneTwoSlides.js */ "./src/JS/setupForOneTwoSlides.js");
-/* harmony import */ var _addControlsBar_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./addControlsBar.js */ "./src/JS/addControlsBar.js");
-/* harmony import */ var _setEventsClickDrag_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./setEventsClickDrag.js */ "./src/JS/setEventsClickDrag.js");
-
+/* harmony import */ var _updateLeftIndex_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./updateLeftIndex.js */ "./src/JS/updateLeftIndex.js");
+/* harmony import */ var _updateRightIndex_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./updateRightIndex.js */ "./src/JS/updateRightIndex.js");
+/* harmony import */ var _updateCurrentIndex_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./updateCurrentIndex.js */ "./src/JS/updateCurrentIndex.js");
+/* harmony import */ var _addControlsBar_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./addControlsBar.js */ "./src/JS/addControlsBar.js");
+/* harmony import */ var _setEventsClickDrag_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./setEventsClickDrag.js */ "./src/JS/setEventsClickDrag.js");
 
 
 
@@ -221,16 +131,31 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
         }
     }
 
-    function reindexSlides(directionSlide) {
+    function updateSlidesIndexes(directionSlide) {
         if(directionSlide) {
-            currentSlide = (0,_getCurrentIndex_js__WEBPACK_IMPORTED_MODULE_2__["default"])(directionSlide, currentSlide, slidesElements);
+            currentSlide = (0,_updateCurrentIndex_js__WEBPACK_IMPORTED_MODULE_2__["default"])(directionSlide, currentSlide, slidesElements);
         }
-        rightSlide = (0,_getRightIndex_js__WEBPACK_IMPORTED_MODULE_1__["default"])(currentSlide, slidesElements);
-        leftSlide = (0,_getLeftIndex_js__WEBPACK_IMPORTED_MODULE_0__["default"])(currentSlide, slidesElements);
+        rightSlide = (0,_updateRightIndex_js__WEBPACK_IMPORTED_MODULE_1__["default"])(currentSlide, slidesElements);
+        leftSlide = (0,_updateLeftIndex_js__WEBPACK_IMPORTED_MODULE_0__["default"])(currentSlide, slidesElements);
     }
 
     function setupSlides() {
-        reindexSlides();
+        function appendCopyElementsToContainer(elementsContainer) {
+            slidesContainer.appendChild(elementsContainer);
+            slidesElements.push(elementsContainer);
+        }
+    
+        if (slidesElements.length === 1) {
+            appendCopyElementsToContainer(slidesElements[0].cloneNode(true));
+            appendCopyElementsToContainer(slidesElements[0].cloneNode(true));
+        }
+        if (slidesElements.length === 2) {
+            appendCopyElementsToContainer(slidesElements[0].cloneNode(true));
+            appendCopyElementsToContainer(slidesElements[1].cloneNode(true));
+        }
+
+        updateSlidesIndexes();
+
         for (let i = 0; i < slidesElements.length; i+=1) {
             slidesElements[i].classList.add('sliderJs_hide');
         }
@@ -239,8 +164,8 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
         slidesElements[rightSlide].style.left = `${widthSlider}${'px'}`;
         slidesElements[leftSlide].classList.remove('sliderJs_hide');
         slidesElements[leftSlide].style.left = `${-widthSlider}${'px'}`;
+
     }
-    
 
     function transitionSlideRight() {
         
@@ -249,7 +174,7 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
         slidesElements[rightSlide].style.left = `${0}${'px'}`;
         
         setTimeout(() => {
-            reindexSlides('right');
+            updateSlidesIndexes('right');
             slidesElements[rightSlide].style.left = `${widthSlider}${'px'}`;
             slidesElements[rightSlide].classList.remove('sliderJs_hide');
             slidesElements[leftSlide].classList.remove('sliderJs_hide');
@@ -263,21 +188,21 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
         slidesElements[leftSlide].style.left = `${0}${'px'}`;
         
         setTimeout(() => {
-            reindexSlides('left');
+            updateSlidesIndexes('left');
             slidesElements[leftSlide].style.left = `${-widthSlider}${'px'}`;
             slidesElements[leftSlide].classList.remove('sliderJs_hide');
             slidesElements[rightSlide].classList.remove('sliderJs_hide');
         },1000);
     }
 
-    function nextSlide() {
+    function slideNext() {
         if (isTransitioning) {
             return;
         }
         transitionSlideRight();
     }
 
-    function prevSlide() {
+    function slidePrev() {
         if (isTransitioning) {
             return;
         }
@@ -291,7 +216,6 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
     }
     
     function addEventTransitionEnd() {
-        
         container.addEventListener('transitionend', () => {
             isTransitioning = false;
         });
@@ -301,21 +225,31 @@ function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlay
     addEventTransitionEnd();
 
     function setSlidesTransitionTime() {
-        if (slideTransitionTime) {
-            for (let i = 0; i < slidesElements.length; i+=1) {
-                slidesElements[i].style.transition = `all ${slideTransitionTime}s cubic-bezier(.45,.05,.55,.95) 0s`;
-            }
+        if (!slideTransitionTime) {
+            return;
+        }
+        for (let i = 0; i < slidesElements.length; i+=1) {
+            slidesElements[i].style.transition = `all ${slideTransitionTime}s cubic-bezier(.45,.05,.55,.95) 0s`;
         }
     }
-
+    setupSlides();
     setSlidesTransitionTime();
     setupInputParameters();
-    (0,_setupForOneTwoSlides_js__WEBPACK_IMPORTED_MODULE_3__["default"])(slidesContainer, slidesElements);
-    setupSlides();
-    (0,_addControlsBar_js__WEBPACK_IMPORTED_MODULE_4__["default"])(container, nextSlide, autoPlayTime, prevSlide, autoPlay, slideTransitionTime, hideButtons);
-    (0,_setEventsClickDrag_js__WEBPACK_IMPORTED_MODULE_5__["default"])(container,prevSlide,nextSlide);
+    (0,_addControlsBar_js__WEBPACK_IMPORTED_MODULE_3__["default"])({
+        container,
+        slideNext,
+        slidePrev
+    },
+    {
+        autoPlayTime,
+        autoPlay,
+        slideTransitionTime,
+        hideButtons
+    });
+    (0,_setEventsClickDrag_js__WEBPACK_IMPORTED_MODULE_4__["default"])(container, slidePrev, slideNext);
     
 }
+
 
 /***/ }),
 
@@ -330,7 +264,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ setEventsClickDrag)
 /* harmony export */ });
 
-function setEventsClickDrag(container,prevSlide,nextSlide) {
+function setEventsClickDrag(container,slidePrev,slideNext) {
     
     let mouseDownXPosition;
     let currentSlideWasChanged = false;
@@ -340,12 +274,12 @@ function setEventsClickDrag(container,prevSlide,nextSlide) {
         const dragShift = positionDragX - mouseDownXPosition;
     
         if(dragShift > 50 && !currentSlideWasChanged) {
-            prevSlide();
+            slidePrev();
             currentSlideWasChanged = true;
     
         }
         if(dragShift < -50 && !currentSlideWasChanged) {
-            nextSlide();
+            slideNext();
             currentSlideWasChanged = true;
         }
     }
@@ -354,48 +288,106 @@ function setEventsClickDrag(container,prevSlide,nextSlide) {
         currentSlideWasChanged = false;
         event.preventDefault();
         mouseDownXPosition = event.pageX;
-        window.addEventListener('pointermove', dragging);
+        container.addEventListener('pointermove', dragging);
     }
     
     function stopDrag() {
-        window.removeEventListener('pointermove', dragging);
+        container.removeEventListener('pointermove', dragging);
     }
     
     container.addEventListener('pointerdown', startDrag);
-    window.addEventListener('pointerup', stopDrag);
+    container.addEventListener('pointerup', stopDrag);
 }
 
 
 
 /***/ }),
 
-/***/ "./src/JS/setupForOneTwoSlides.js":
-/*!****************************************!*\
-  !*** ./src/JS/setupForOneTwoSlides.js ***!
-  \****************************************/
+/***/ "./src/JS/updateCurrentIndex.js":
+/*!**************************************!*\
+  !*** ./src/JS/updateCurrentIndex.js ***!
+  \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "default": () => (/* binding */ updateCurrentIndex)
 /* harmony export */ });
-function setupForOneTwoSlides(container, elements) {
-    function appendElement(element) {
-        container.appendChild(element);
-        elements.push(element);
+function updateCurrentIndex(direction, currentIndex, elements) {
+    let currentIndexValue;
+    if (direction === 'right' && currentIndex === elements.length - 1) {
+        currentIndexValue = 0;
+    }else if (direction === 'right'){
+        currentIndexValue = currentIndex + 1;
     }
 
-    if (elements.length === 1) {
-        appendElement(elements[0].cloneNode(true));
-        appendElement(elements[0].cloneNode(true));
+    if (direction === 'left' && currentIndex === 0) {
+        currentIndexValue = elements.length - 1;
+    }else if (direction === 'left'){
+        currentIndexValue = currentIndex - 1;
     }
-    if (elements.length === 2) {
-        appendElement(elements[0].cloneNode(true));
-        appendElement(elements[1].cloneNode(true));
-    }
+    return currentIndexValue;
 }
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (setupForOneTwoSlides);
+/***/ }),
+
+/***/ "./src/JS/updateLeftIndex.js":
+/*!***********************************!*\
+  !*** ./src/JS/updateLeftIndex.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ updateLeftIndex)
+/* harmony export */ });
+function updateLeftIndex(currentIndex, elements) {
+    let leftIndex;
+
+    if (currentIndex === 0) {
+        leftIndex = elements.length - 1;
+    }
+    if (currentIndex === elements.length - 1) {
+        leftIndex = currentIndex - 1;
+    }
+    if (currentIndex !== 0 && currentIndex !== elements.length - 1) { 
+        leftIndex = currentIndex - 1;
+    }
+    return leftIndex;
+}
+
+/***/ }),
+
+/***/ "./src/JS/updateRightIndex.js":
+/*!************************************!*\
+  !*** ./src/JS/updateRightIndex.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ updateRightIndex)
+/* harmony export */ });
+function updateRightIndex(currentIndex, elements) {
+    let rightIndex;
+
+    if (currentIndex === 0) {
+        rightIndex = currentIndex + 1;
+    }
+    if (currentIndex === elements.length - 1) {
+        rightIndex = 0;
+    }
+    if (currentIndex !== 0 && currentIndex !== elements.length - 1) { 
+        rightIndex = currentIndex + 1;
+    }
+    return rightIndex;
+}
+
+
+
+
+
+
 
 /***/ })
 

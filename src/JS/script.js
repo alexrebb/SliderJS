@@ -1,9 +1,7 @@
-import getLeftIndex from "./getLeftIndex.js";
-import getRightIndex from "./getRightIndex.js";
-import getCurrentIndex from "./getCurrentIndex.js";
-import setupForOneTwoSlides from "./setupForOneTwoSlides.js";
+import updateSlidesIndexes from "./updateSlidesIndexes.js";
 import addControlsBar from "./addControlsBar.js";
 import setEventsClickDrag from "./setEventsClickDrag.js";
+import transitionSlides from "./transitionSlides.js";
 
 
 export default function startSlider({containerId, widthSlider, heightSlider, autoPlay, autoPlayTime, hideButtons, slideTransitionTime, startSlide }) {
@@ -22,13 +20,18 @@ export default function startSlider({containerId, widthSlider, heightSlider, aut
         return slides;
     }
 
-    const slidesElements = getSlides();
-
-    let currentSlide = startSlide - 1;
-    let rightSlide = 0;
-    let leftSlide = 0;
-    let isTransitioning = false;
+    const stateSlider = {
+        slidesElements: [],
+        isTransitioning: false
+    }; 
     
+    stateSlider.slidesElements = getSlides();
+
+    const stateIndexes = {
+        currentSlide: startSlide - 1,
+        rightSlide: 0,
+        leftSlide: 0
+    };
 
     function setupInputParameters() {
         if (widthSlider) {
@@ -39,98 +42,107 @@ export default function startSlider({containerId, widthSlider, heightSlider, aut
         }
     }
 
-    function reindexSlides(directionSlide) {
-        if(directionSlide) {
-            currentSlide = getCurrentIndex(directionSlide, currentSlide, slidesElements);
-        }
-        rightSlide = getRightIndex(currentSlide, slidesElements);
-        leftSlide = getLeftIndex(currentSlide, slidesElements);
-    }
-
     function setupSlides() {
-        reindexSlides();
-        for (let i = 0; i < slidesElements.length; i+=1) {
-            slidesElements[i].classList.add('sliderJs_hide');
+        function appendCopyElementsToContainer(elementsContainer) {
+            slidesContainer.appendChild(elementsContainer);
+            stateSlider.slidesElements.push(elementsContainer);
         }
-        slidesElements[currentSlide].classList.remove('sliderJs_hide');
-        slidesElements[rightSlide].classList.remove('sliderJs_hide');
-        slidesElements[rightSlide].style.left = `${widthSlider}${'px'}`;
-        slidesElements[leftSlide].classList.remove('sliderJs_hide');
-        slidesElements[leftSlide].style.left = `${-widthSlider}${'px'}`;
-    }
     
+        if (stateSlider.slidesElements.length === 1) {
+            appendCopyElementsToContainer(stateSlider.slidesElements[0].cloneNode(true));
+            appendCopyElementsToContainer(stateSlider.slidesElements[0].cloneNode(true));
+            stateSlider.slidesElements = getSlides();
+        }
+        if (stateSlider.slidesElements.length === 2) {
+            appendCopyElementsToContainer(stateSlider.slidesElements[0].cloneNode(true));
+            appendCopyElementsToContainer(stateSlider.slidesElements[1].cloneNode(true));
+            stateSlider.slidesElements = getSlides();
+        }
 
-    function transitionSlideRight() {
-        
-        slidesElements[leftSlide].classList.add('sliderJs_hide');
-        slidesElements[currentSlide].style.left = `${-widthSlider}${'px'}`; 
-        slidesElements[rightSlide].style.left = `${0}${'px'}`;
-        
-        setTimeout(() => {
-            reindexSlides('right');
-            slidesElements[rightSlide].style.left = `${widthSlider}${'px'}`;
-            slidesElements[rightSlide].classList.remove('sliderJs_hide');
-            slidesElements[leftSlide].classList.remove('sliderJs_hide');
-        },1000);
+        updateSlidesIndexes({
+            sliderContainer: stateSlider.slidesElements,
+            leftIndex: stateIndexes.leftSlide,
+            rightIndex: stateIndexes.rightSlide,
+            currentIndex: stateIndexes.currentSlide
+        });
+
+        for (let i = 0; i < stateSlider.slidesElements.length; i+=1) {
+            stateSlider.slidesElements[i].classList.add('sliderJs_hide');
+        }
+        stateSlider.slidesElements[stateIndexes.currentSlide].classList.remove('sliderJs_hide');
+        stateSlider.slidesElements[stateIndexes.rightSlide].classList.remove('sliderJs_hide');
+        stateSlider.slidesElements[stateIndexes.rightSlide].style.left = `${widthSlider}${'px'}`;
+        stateSlider.slidesElements[stateIndexes.leftSlide].classList.remove('sliderJs_hide');
+        stateSlider.slidesElements[stateIndexes.leftSlide].style.left = `${-widthSlider}${'px'}`;
+
     }
 
-    function transitionSlideLeft() {
-        
-        slidesElements[rightSlide].classList.add('sliderJs_hide');
-        slidesElements[currentSlide].style.left = `${widthSlider}${'px'}`; 
-        slidesElements[leftSlide].style.left = `${0}${'px'}`;
-        
-        setTimeout(() => {
-            reindexSlides('left');
-            slidesElements[leftSlide].style.left = `${-widthSlider}${'px'}`;
-            slidesElements[leftSlide].classList.remove('sliderJs_hide');
-            slidesElements[rightSlide].classList.remove('sliderJs_hide');
-        },1000);
-    }
 
-    function nextSlide() {
-        if (isTransitioning) {
+    function slideNext() {
+        if (stateSlider.isTransitioning) {
             return;
         }
-        transitionSlideRight();
+        transitionSlides({
+            direction: 'right',
+            sliderContainer: stateSlider.slidesElements,
+            leftIndex: stateIndexes.leftSlide,
+            rightIndex: stateIndexes.rightSlide,
+            currentIndex: stateIndexes.currentSlide,
+            width: widthSlider
+        });
     }
 
-    function prevSlide() {
-        if (isTransitioning) {
+    function slidePrev() {
+        if (stateSlider.isTransitioning) {
             return;
         }
-        transitionSlideLeft();
+        transitionSlides({
+            direction: 'left',
+            sliderContainer: stateSlider.slidesElements,
+            leftIndex: stateIndexes.leftSlide,
+            rightIndex: stateIndexes.rightSlide,
+            currentIndex: stateIndexes.currentSlide,
+            width: widthSlider
+        });
     }
 
     function addEventTransitionStart() {
         container.addEventListener('transitionstart', () => {
-            isTransitioning = true;
+            stateSlider.isTransitioning = true;
         });
     }
     
     function addEventTransitionEnd() {
-        
         container.addEventListener('transitionend', () => {
-            isTransitioning = false;
+            stateSlider.isTransitioning = false;
         });
+    }
+
+    function setSlidesTransitionTime() {
+        if (!slideTransitionTime) {
+            return;
+        }
+        for (let i = 0; i < stateSlider.slidesElements.length; i+=1) {
+            stateSlider.slidesElements[i].style.transition = `all ${slideTransitionTime}s cubic-bezier(.45,.05,.55,.95) 0s`;
+        }
     }
 
     addEventTransitionStart();
     addEventTransitionEnd();
-
-    function setSlidesTransitionTime() {
-        if (slideTransitionTime) {
-            for (let i = 0; i < slidesElements.length; i+=1) {
-                slidesElements[i].style.transition = `all ${slideTransitionTime}s cubic-bezier(.45,.05,.55,.95) 0s`;
-            }
-        }
-    }
-
+    setupSlides();
     setSlidesTransitionTime();
     setupInputParameters();
-    setupForOneTwoSlides(slidesContainer, slidesElements);
-    setupSlides();
-    addControlsBar(container, nextSlide, autoPlayTime, prevSlide, autoPlay, slideTransitionTime, hideButtons);
-    setEventsClickDrag(container,prevSlide,nextSlide);
+    addControlsBar({
+        container,
+        slideNext,
+        slidePrev
+    },
+    {
+        autoPlayTime,
+        autoPlay,
+        slideTransitionTime,
+        hideButtons
+    });
+    setEventsClickDrag(container, slidePrev, slideNext);
     
 }
