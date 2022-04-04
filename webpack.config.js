@@ -1,17 +1,14 @@
-'use strict';
-
-let path = require('path');
+const path = require("path");
 
 module.exports = {
-  mode: 'development',
-  entry: './example/index.js',
+  context: path.resolve(__dirname, "src/JS"),
+  entry: "./script.js",
+  target: "web",
   output: {
-    filename: 'bundle.js',
-    path: __dirname + '/src/JS'
+    filename: "arsliderjs.js",
+    path: path.resolve(__dirname, "dist"),
+    library: "SliderJS",
+    libraryExport: "default",
+    libraryTarget: "this",
   },
-  watch: true,
-
-  devtool: "source-map",
-
-  module: {}
 };

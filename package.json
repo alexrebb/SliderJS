@@ -2,7 +2,7 @@
   "name": "arsliderjs",
   "version": "1.0.0",
   "description": "<br>\r SlidesJS is a simple slider with custom settings for your website.",
-  "main": "script.js",
+  "main": "dist/vm-slider-js.js",
   "dependencies": {},
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.8",
@@ -16,10 +16,21 @@
     "jest": "^27.5.1",
     "prettier": "2.5.1"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "webpack",
     "test": "jest"
   },
-  "author": "",
-  "license": "ISC"
+  "homepage": "https://github.com/alexrebb/SliderJS/blob/master/README.md",
+  "keywords": [
+    "slider"
+  ],
+  "author": "alexrebb",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexrebb/SliderJS.git"
+  }
 }
